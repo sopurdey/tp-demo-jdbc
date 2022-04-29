@@ -85,7 +85,7 @@ public class CompoIdao implements IDao<Compo> {
 
 	@Override
 	public int update(Compo ancienCo, Compo nouveauCo) {
-		String sql = "UPDATE compo SET ID_ART='?', ID_BON='?', QTE='?' WHERE ID ='?'";
+		String sql = "UPDATE compo SET ID_ART=?, ID_BON=?, QTE=? WHERE ID =?";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, nouveauCo.getIdArt());
@@ -102,7 +102,7 @@ public class CompoIdao implements IDao<Compo> {
 
 	@Override
 	public boolean delete(Compo co) {
-		String sql = "DELETE FROM compo WHERE ID='?';";
+		String sql = "DELETE FROM compo WHERE ID=?;";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, co.getId());

@@ -81,7 +81,7 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 
 	@Override
 	public int update(Fournisseur ancienFo, Fournisseur nouveauFo) {
-		String sql = "UPDATE fournisseur SET NOM ='?' WHERE ID ='?'";
+		String sql = "UPDATE fournisseur SET NOM=? WHERE ID=?";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setString(1, nouveauFo.getNom());
@@ -96,7 +96,7 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 
 	@Override
 	public boolean delete(Fournisseur fo) {
-		String sql = "DELETE FROM fournisseur WHERE ID='?';";
+		String sql = "DELETE FROM fournisseur WHERE ID=?;";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, fo.getId());

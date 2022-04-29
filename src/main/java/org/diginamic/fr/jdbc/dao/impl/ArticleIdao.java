@@ -6,12 +6,17 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.diginamic.fr.TestConnexionJdbc;
 import org.diginamic.fr.jdbc.dao.IDao;
 import org.diginamic.fr.jdbc.entites.Article;
 
 public class ArticleIdao implements IDao<Article> {
 
 	private Connection connexion = null;
+	
+	public ArticleIdao() throws Exception {
+		connexion = TestConnexionJdbc.getConnection();
+	}
 
 	/**
 	 * fermer la connexion à la bdd
@@ -35,7 +40,7 @@ public class ArticleIdao implements IDao<Article> {
 	@Override
 	public List<Article> extraire() {
 		List<Article> listeArticles = new ArrayList<Article>();
-		String sql = "SELECT (ID, REF, DESIGNATION, PRIX, ID_FOU) FROM article";
+		String sql = "SELECT ID, REF, DESIGNATION, PRIX, ID_FOU FROM article";
 
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
@@ -74,7 +79,7 @@ public class ArticleIdao implements IDao<Article> {
 
 	@Override
 	public int update(Article ancienA, Article nouveauA) {
-		String sql = "UPDATE article SET REF='?', DESIGNATION='?', PRIX='?', ID_FOU='?' WHERE ID ='?'";
+		String sql = "UPDATE article SET REF=?, DESIGNATION=?, PRIX=?, ID_FOU=? WHERE ID =?";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setString(1, nouveauA.getRef());
@@ -92,7 +97,7 @@ public class ArticleIdao implements IDao<Article> {
 
 	@Override
 	public boolean delete(Article art) {
-		String sql = "DELETE FROM article WHERE ID='?';";
+		String sql = "DELETE FROM article WHERE ID=?;";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, art.getId());

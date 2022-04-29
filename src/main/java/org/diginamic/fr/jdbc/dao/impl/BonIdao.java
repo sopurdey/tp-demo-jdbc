@@ -35,7 +35,7 @@ public class BonIdao implements IDao<Bon> {
 	@Override
 	public List<Bon> extraire() {
 		List<Bon> listeBons = new ArrayList<Bon>();
-		String sql = "SELECT (ID, NUMERO, DATE_CMDE, DELAI, ID_FOU) FROM bon";
+		String sql = "SELECT ID, NUMERO, DATE_CMDE, DELAI, ID_FOU FROM bon";
 
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
@@ -74,7 +74,7 @@ public class BonIdao implements IDao<Bon> {
 
 	@Override
 	public int update(Bon ancienB, Bon nouveauB) {
-		String sql = "UPDATE bon SET NUMERO='?', DATE_CMDE='?', DELAI='?', ID_FOU='?' WHERE ID ='?'";
+		String sql = "UPDATE bon SET NUMERO=?, DATE_CMDE=?, DELAI=?, ID_FOU=? WHERE ID =?";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, nouveauB.getNumero());
@@ -92,7 +92,7 @@ public class BonIdao implements IDao<Bon> {
 
 	@Override
 	public boolean delete(Bon bon) {
-		String sql = "DELETE FROM bon WHERE ID='?';";
+		String sql = "DELETE FROM bon WHERE ID=?;";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, bon.getId());
