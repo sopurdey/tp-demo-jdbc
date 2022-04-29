@@ -6,20 +6,16 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.diginamic.fr.TestConnexionJdbc;
 import org.diginamic.fr.jdbc.dao.IDao;
-import org.diginamic.fr.jdbc.entites.Fournisseur;
+import org.diginamic.fr.jdbc.entites.Article;
 
-public class FournisseurIdao implements IDao<Fournisseur> {
+public class ArticleIdao implements IDao<Article> {
 
 	private Connection connexion = null;
 
-	public FournisseurIdao() throws Exception {
-		connexion = TestConnexionJdbc.getConnection();
-	}
-
 	/**
 	 * fermer la connexion à la bdd
+	 * 
 	 * @throws Exception
 	 */
 	public void close() throws Exception {
@@ -37,69 +33,69 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 	}
 
 	@Override
-	public List<Fournisseur> extraire() {
+	public List<Article> extraire() {
+		List<Article> listeArticles = new ArrayList<Article>();
+		String sql = "SELECT (ID, REF, DESIGNATION, PRIX, ID_FOU) FROM article";
 
-		List<Fournisseur> listeDesFournisseurs = new ArrayList<Fournisseur>();
-		String sql = "SELECT ID,NOM FROM fournisseur";
-		
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			// import java.sql
 			ResultSet curseur = stat.executeQuery();
 			while (curseur.next()) {
-				/**
-				 * Je veux récupérer la colonne ID et la colonne Nom de ma table la stocker dans
-				 * un objet de type Fournisseur et la mettre dans notre Liste
-				 */
-				Fournisseur fo = new Fournisseur(curseur.getInt("ID"), curseur.getString("NOM"));
-				listeDesFournisseurs.add(fo);
+				Article ao = new Article(curseur.getInt("ID"), curseur.getString("REF"),
+						curseur.getString("DESIGNATION"), curseur.getDouble("PRIX"), curseur.getInt("ID_FOU"));
+				listeArticles.add(ao);
 			}
-			/**
-			 * Je ferme dans l'ordre mon ResulSet puis mon Statement
-			 */
 			curseur.close();
 			stat.close();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		return listeDesFournisseurs;
+		return listeArticles;
 	}
 
 	@Override
-	public void insert(Fournisseur fo) {
-		String sql = "INERT INTO fournisseur (ID, NOM) VALUES (?, ?);";
+	public void insert(Article art) {
+		String sql = "INERT INTO article (ID, REF, DESIGNATION, PRIX, ID_FOU) VALUES (?, ?, ?, ?, ?);";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
-			stat.setInt(1, fo.getId());
-			stat.setString(2, fo.getNom());
+			stat.setInt(1, art.getId());
+			stat.setString(2, art.getRef());
+			stat.setString(3, art.getDesignation());
+			stat.setDouble(4, art.getPrix());
+			stat.setInt(5, art.getIdFou());
 			stat.executeUpdate();
 			stat.close();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
+
 	}
 
 	@Override
-	public int update(Fournisseur ancienFo, Fournisseur nouveauFo) {
-		String sql = "UPDATE fournisseur SET NOM ='?' WHERE ID ='?'";
+	public int update(Article ancienA, Article nouveauA) {
+		String sql = "UPDATE article SET REF='?', DESIGNATION='?', PRIX='?', ID_FOU='?' WHERE ID ='?'";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
-			stat.setString(1, nouveauFo.getNom());
-			stat.setInt(2, ancienFo.getId());
+			stat.setString(1, nouveauA.getRef());
+			stat.setString(2, nouveauA.getDesignation());
+			stat.setDouble(3, nouveauA.getPrix());
+			stat.setInt(4, nouveauA.getIdFou());
+			stat.setInt(5, ancienA.getId());
 			stat.executeUpdate();
 			stat.close();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		return ancienFo.getId();
+		return ancienA.getId();
 	}
 
 	@Override
-	public boolean delete(Fournisseur fo) {
-		String sql = "DELETE FROM fournisseur WHERE ID='?';";
+	public boolean delete(Article art) {
+		String sql = "DELETE FROM article WHERE ID='?';";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
-			stat.setInt(1, fo.getId());
+			stat.setInt(1, art.getId());
 			stat.executeUpdate();
 			stat.close();
 		} catch (Exception ex) {
