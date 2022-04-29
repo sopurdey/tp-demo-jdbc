@@ -8,18 +8,19 @@ import java.util.List;
 
 import org.diginamic.fr.TestConnexionJdbc;
 import org.diginamic.fr.jdbc.dao.IDao;
-import org.diginamic.fr.jdbc.entites.Fournisseur;
+import org.diginamic.fr.jdbc.entites.Compo;
 
-public class FournisseurIdao implements IDao<Fournisseur> {
+public class CompoIdao implements IDao<Compo> {
 
 	private Connection connexion = null;
 
-	public FournisseurIdao() throws Exception {
+	public CompoIdao() throws Exception {
 		connexion = TestConnexionJdbc.getConnection();
 	}
 
 	/**
 	 * fermer la connexion à la bdd
+	 * 
 	 * @throws Exception
 	 */
 	public void close() throws Exception {
@@ -37,11 +38,11 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 	}
 
 	@Override
-	public List<Fournisseur> extraire() {
+	public List<Compo> extraire() {
 
-		List<Fournisseur> listeFournisseurs = new ArrayList<Fournisseur>();
-		String sql = "SELECT ID,NOM FROM fournisseur";
-		
+		List<Compo> listeCompos = new ArrayList<Compo>();
+		String sql = "SELECT ID, ID_ART, ID_BON, QTE FROM compo";
+
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			// import java.sql
@@ -49,10 +50,11 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 			while (curseur.next()) {
 				/**
 				 * Je veux récupérer la colonne ID et la colonne Nom de ma table la stocker dans
-				 * un objet de type Fournisseur et la mettre dans notre Liste
+				 * un objet de type Compo et la mettre dans notre Liste
 				 */
-				Fournisseur fo = new Fournisseur(curseur.getInt("ID"), curseur.getString("NOM"));
-				listeFournisseurs.add(fo);
+				Compo co = new Compo(curseur.getInt("ID"), curseur.getInt("ID_ART"), curseur.getInt("ID_BON"),
+						curseur.getInt("QTE"));
+				listeCompos.add(co);
 			}
 			/**
 			 * Je ferme dans l'ordre mon ResulSet puis mon Statement
@@ -62,16 +64,18 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		return 	listeFournisseurs;
+		return listeCompos;
 	}
 
 	@Override
-	public void insert(Fournisseur fo) {
-		String sql = "INSERT INTO fournisseur (ID, NOM) VALUES (?, ?);";
+	public void insert(Compo co) {
+		String sql = "INSERT INTO compo (ID, ID_ART, ID_BON, QTE) VALUES (?, ?, ?, ?);";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
-			stat.setInt(1, fo.getId());
-			stat.setString(2, fo.getNom());
+			stat.setInt(1, co.getId());
+			stat.setInt(2, co.getIdArt());
+			stat.setInt(3, co.getIdBon());
+			stat.setInt(4, co.getQte());
 			stat.executeUpdate();
 			stat.close();
 		} catch (Exception ex) {
@@ -80,26 +84,28 @@ public class FournisseurIdao implements IDao<Fournisseur> {
 	}
 
 	@Override
-	public int update(Fournisseur ancienFo, Fournisseur nouveauFo) {
-		String sql = "UPDATE fournisseur SET NOM ='?' WHERE ID ='?'";
+	public int update(Compo ancienCo, Compo nouveauCo) {
+		String sql = "UPDATE compo SET ID_ART='?', ID_BON='?', QTE='?' WHERE ID ='?'";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
-			stat.setString(1, nouveauFo.getNom());
-			stat.setInt(2, ancienFo.getId());
+			stat.setInt(1, nouveauCo.getIdArt());
+			stat.setInt(2, nouveauCo.getIdBon());
+			stat.setInt(3, nouveauCo.getQte());
+			stat.setInt(4, ancienCo.getId());
 			stat.executeUpdate();
 			stat.close();
 		} catch (Exception ex) {
 			System.err.println(ex.getMessage());
 		}
-		return ancienFo.getId();
+		return ancienCo.getId();
 	}
 
 	@Override
-	public boolean delete(Fournisseur fo) {
-		String sql = "DELETE FROM fournisseur WHERE ID='?';";
+	public boolean delete(Compo co) {
+		String sql = "DELETE FROM compo WHERE ID='?';";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
-			stat.setInt(1, fo.getId());
+			stat.setInt(1, co.getId());
 			stat.executeUpdate();
 			stat.close();
 		} catch (Exception ex) {

@@ -56,7 +56,7 @@ public class ArticleIdao implements IDao<Article> {
 
 	@Override
 	public void insert(Article art) {
-		String sql = "INERT INTO article (ID, REF, DESIGNATION, PRIX, ID_FOU) VALUES (?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO article (ID, REF, DESIGNATION, PRIX, ID_FOU) VALUES (?, ?, ?, ?, ?);";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, art.getId());

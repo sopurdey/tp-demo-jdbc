@@ -56,7 +56,7 @@ public class BonIdao implements IDao<Bon> {
 
 	@Override
 	public void insert(Bon bon) {
-		String sql = "INERT INTO bon (ID, NUMERO, DATE_CMDE, DELAI, ID_FOU) VALUES (?, ?, ?, ?, ?);";
+		String sql = "INSERT INTO bon (ID, NUMERO, DATE_CMDE, DELAI, ID_FOU) VALUES (?, ?, ?, ?, ?);";
 		try {
 			PreparedStatement stat = connexion.prepareStatement(sql);
 			stat.setInt(1, bon.getId());
